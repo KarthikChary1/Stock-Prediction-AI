@@ -109,8 +109,8 @@ def real_time_stock_graph(tickers_df):
     # Plot the data using Plotly and the selected indicator
     plot_stock_data(data, indicator='None' if indicator == 'None' else indicator)
 
-    # Refresh the graph every minute
-    st.experimental_rerun()
+    # Automatically refresh the app every 60 seconds
+    st.autorefresh(interval=60 * 1000)  # 60 seconds in milliseconds
 
 # Set up the sidebar for navigation
 def app():
