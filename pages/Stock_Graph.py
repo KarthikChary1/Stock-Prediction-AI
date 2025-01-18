@@ -2,6 +2,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 import plotly.graph_objects as go
+import time
 
 # Load tickers and company names from CSV
 def load_tickers_from_csv(file_path):
@@ -75,7 +76,7 @@ def plot_stock_data(data, indicator=None):
             yaxis_title='Price (USD)',
         )
 
-    st.plotly_chart(fig)
+    return fig
 
 # Function for the real-time stock graph page
 def real_time_stock_graph(tickers_df):
@@ -102,15 +103,26 @@ def real_time_stock_graph(tickers_df):
     interval = st.sidebar.selectbox("Select Interval", ["1m", "5m", "30m", "60m", "1d", "5d", "1wk", "1mo"], index=0)
     indicator = st.sidebar.selectbox("Select Indicator", ["None", "RSI", "MACD"], index=0)
 
-    # Fetch stock data
-    data = fetch_stock_data(selected_ticker, interval)
-    st.write(f"Displaying real-time data for: {selected_ticker} with interval: {interval} and indicator: {indicator}")
+    # Create an empty container to hold the plot
+    chart_placeholder = st.empty()
 
-    # Plot the data using Plotly and the selected indicator
-    plot_stock_data(data, indicator='None' if indicator == 'None' else indicator)
+    # Button to start the real-time graph
+    if st.sidebar.button("Start Real-Time Chart"):
+        st.write(f"Displaying real-time data for: {selected_ticker} with interval: {interval} and indicator: {indicator}")
 
-    # Automatically refresh the app every 60 seconds
-    st.autorefresh(interval=60 * 1000)  # 60 seconds in milliseconds
+        # Loop to update the graph every minute
+        while True:
+            # Fetch stock data
+            data = fetch_stock_data(selected_ticker, interval)
+            
+            # Plot the data using Plotly and the selected indicator
+            fig = plot_stock_data(data, indicator='None' if indicator == 'None' else indicator)
+            
+            # Update the chart
+            chart_placeholder.plotly_chart(fig)
+
+            # Sleep for a minute before fetching new data
+            time.sleep(60)  # Fetch new data every minute
 
 # Set up the sidebar for navigation
 def app():
