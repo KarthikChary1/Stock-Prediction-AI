@@ -46,16 +46,16 @@ st.markdown("## 🚀 Get Started")
 col1, col2 , col3 = st.columns(3)
 
 with col1:
-    #if st.button("Prophet and LSTM Models"):
-    st.page_link(page="pages\Models.py",label="Click Here to Start")
+    if st.button("Prophet and LSTM Models"):
+        st.page_link(page="pages/Models.py",label="Click Here to Start")
 
 with col2:
-    #if st.button("Chat with AI (LLM Insights)"):
-    st.page_link(page="pages/Ollama.py",label="Click Here to Start")
+    if st.button("Chat with AI (LLM Insights)"):
+        st.page_link(page="pages/Ollama.py",label="Click Here to Start")
 
 with col3:
-    #if st.button("Realtime Stock Graph"):
-    st.page_link(page="pages/Stock_Graph.py",label="Click Here to Start")        
+    if st.button("Realtime Stock Graph"):
+        st.page_link(page="pages/Stock_Graph.py",label="Click Here to Start")        
 
 # Footer
 st.markdown(
