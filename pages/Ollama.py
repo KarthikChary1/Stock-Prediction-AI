@@ -29,9 +29,9 @@ def ollama():
 
     # Filter selected column or display all columns for the last 30 days
     if selected_column == "All":
-        data = data.tail(50)
+        data = data.tail(100)
     else:
-        data = data[["Datetime", selected_column]].tail(50)
+        data = data[["Datetime", selected_column]].tail(100)
 
     # Fetch API key for the LLM
     groq_api_key = st.secrets.get("API_KEYS", {}).get("GROQ_API_KEY", "no api key found")
