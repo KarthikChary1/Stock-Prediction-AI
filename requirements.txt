@@ -1,0 +1,13 @@
+yfinance
+tensorflow
+streamlit
+prophet
+scikit-learn
+keras
+langchain
+langchain-groq
+langchain-core
+langchain-community
+langchain-experimental
+tabulate
+plotly
