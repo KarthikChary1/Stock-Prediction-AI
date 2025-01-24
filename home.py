@@ -56,11 +56,7 @@ with col2:
 
 with col3:
     if st.button("Stock Trend With News"):
-<<<<<<< Updated upstream
         st.page_link(page="pages/StockTrend_With_News.py",label="Click Here to Start")     
-=======
-        st.page_link(page="pages/StockTrend_With_News.py",label="Click Here to Start")     
->>>>>>> Stashed changes
 
 with col4:
     if st.button("Stock News"):
