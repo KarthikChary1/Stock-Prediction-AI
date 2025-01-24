@@ -15,7 +15,7 @@ def main():
 
     # Input for company name and stock ticker
     company_name = st.sidebar.text_input("Enter the company name:", "")
-    ticker = st.sidebar.text_input("Enter Stock Ticker")
+    ticker = st.sidebar.text_input("Enter Stock Ticker", value="^NSEI")
 
     # Stock data interval
     interval = "1d"
@@ -52,11 +52,12 @@ def main():
     # Function to handle LLM response gracefully
     def handle_llm_response(response):
         try:
-            # Check if response is valid or has required content
+            # Check if the response contains technical details or structured information
             if "analysis" in response.lower() or "predictions" in response.lower():
                 return response
             else:
-                return "The analysis could not be generated in the expected format. Please try again."
+                # If it's a generic response, provide a more helpful fallback
+                return "The response does not seem structured enough. Please try again with a more detailed analysis."
         except Exception as e:
             return f"An error occurred while processing the response: {str(e)}"
 
@@ -105,11 +106,12 @@ def main():
                         allow_dangerous_code=True,
                     )
 
-                    # Define a prompt for stock analysis
+                    # Refined prompt to guide the analysis
                     stock_analysis_prompt = f"""
-                    You are a friendly stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume),
-                    perform technical analysis and trends. Incorporate the news: "{latest_article['description']}".
-                    Provide insights and predictions based on the data in a structured format.
+                    You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
+                    Analyze the trends, predict future movements, and incorporate insights from this news: {latest_article['description']}. 
+                    Provide a structured response with specific analysis on potential trends, including whether the stock is oversold or overbought, any breakout signals, 
+                    and predictions based on the data you have.
                     """
 
                     # Add progress bar during processing
