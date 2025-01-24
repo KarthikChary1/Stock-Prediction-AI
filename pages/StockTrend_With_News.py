@@ -111,7 +111,7 @@ def main():
                     You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
                     Analyze the trends, predict future movements, and incorporate insights from this news: {latest_article['description']}. 
                     Provide a structured response with specific analysis on potential trends, including whether the stock is oversold or overbought, any breakout signals, 
-                    and predictions based on the data you have.
+                    and predictions based on the data you have and don't use talib.
                     """
 
                     # Add progress bar during processing
