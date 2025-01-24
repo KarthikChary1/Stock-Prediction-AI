@@ -15,7 +15,7 @@ def main():
 
     # Input for company name and stock ticker
     company_name = st.sidebar.text_input("Enter the company name:", "")
-    ticker = st.sidebar.text_input("Enter Stock Ticker", value="^NSEI")
+    ticker = st.sidebar.text_input("Enter Stock Ticker")
 
     # Stock data interval
     interval = "1d"
