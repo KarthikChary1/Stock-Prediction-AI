@@ -56,7 +56,7 @@ with col2:
 
 with col3:
     if st.button("Stock Trend With News"):
-        st.page_link(page="pages/StockTrendWithNews.py",label="Stock Trend With News")     
+        st.page_link(page="pages/StockTrend_With_News.py",label="Stock Trend With News")     
 
 with col4:
     if st.button("Stock News"):
