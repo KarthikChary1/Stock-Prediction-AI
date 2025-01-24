@@ -56,11 +56,11 @@ with col2:
 
 with col3:
     if st.button("Stock Trend With News"):
-        st.page_link(page="pages/StockTrend_With_News.py",label="Stock Trend With News")     
+        st.page_link(page="pages/StockTrend_With_News.py",label="Click Here to Start")     
 
 with col4:
     if st.button("Stock News"):
-        st.page_link(page="pages/News.py",label="Latest News")   
+        st.page_link(page="pages/News.py",label="Click Here to Start")   
 
 # Footer
 st.markdown(
