@@ -49,7 +49,18 @@ def main():
     end_date = datetime.date.today()
     start_date = end_date - datetime.timedelta(days=7)
 
-    # Fetch news when the user clicks the button
+    # Function to handle LLM response gracefully
+    def handle_llm_response(response):
+        try:
+            # Check if response is valid or has required content
+            if "analysis" in response.lower() or "predictions" in response.lower():
+                return response
+            else:
+                return "The analysis could not be generated in the expected format. Please try again."
+        except Exception as e:
+            return f"An error occurred while processing the response: {str(e)}"
+
+    # Fetch news and stock data when button is clicked
     if st.button("Fetch Latest News and Analyze"):
         if company_name:
             st.write(f"Fetching news for: {company_name}")
@@ -73,7 +84,7 @@ def main():
                         return
                     data.reset_index(inplace=True)
 
-                    # Filter selected column or display all columns for the last 100 rows
+                    # Limit data to the last 100 rows
                     data = data.tail(100)
 
                     # Fetch API key for the LLM
@@ -97,7 +108,7 @@ def main():
                     # Define a prompt for stock analysis
                     stock_analysis_prompt = f"""
                     You are a friendly stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume),
-                    perform technical analysis and trends. Incorporate the news: "{latest_article['description']}". 
+                    perform technical analysis and trends. Incorporate the news: "{latest_article['description']}".
                     Provide insights and predictions based on the data in a structured format.
                     """
 
@@ -109,9 +120,13 @@ def main():
                             response = pandas_df_agent.run(stock_analysis_prompt)
                             for i in range(100):
                                 progress_bar.progress(i + 1)
+
+                            # Handle and validate the response
+                            parsed_response = handle_llm_response(response)
+
                             # Display assistant response
                             st.markdown("## Stock Analysis Insights")
-                            st.write(response)
+                            st.write(parsed_response)
 
                         except Exception as e:
                             st.error(f"Error generating response: {str(e)}")
