@@ -93,7 +93,7 @@ def main():
                         return
 
                     # Initialize ChatGroq LLM
-                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama-3.1-8b-instant")
+                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="gemma2-9b-it")
 
                     # Create a pandas dataframe agent
                     pandas_df_agent = create_pandas_dataframe_agent(
@@ -111,9 +111,8 @@ def main():
                     Don't use ta-lib for analysis, use pandas-ta.
                     Provide a structured response in the following format:
                     1. **Trend Analysis**: Describe the overall trend (e.g., upward, downward, sideways).
-                    2. **Technical Indicators**: Highlight breakout signals, oversold/overbought conditions, or unusual volumes.
-                    3. **Predictions**: Offer short-term predictions with a confidence level (low, medium, high).
-                    4. **Impact of News**: Summarize how the latest news may affect the stock.
+                    2. **Predictions**: Offer short-term predictions with a confidence level (low, medium, high).
+                    3. **Impact of News**: Summarize how the latest news may affect the stock.
                     """
 
                     # Add progress bar during processing
