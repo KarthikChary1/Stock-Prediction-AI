@@ -19,8 +19,6 @@ def main():
 
     # Stock data interval
     interval = "1d"
-    # columns = ["Low", "Open", "High", "All", "Close", "Adj Close", "Volume"]
-    # selected_column = st.sidebar.selectbox("Select Column to Forecast", options=columns, index=3)  # Default: "Close"
 
     # NewsAPI configuration
     NEWS_API_KEY = st.secrets.get("News", {}).get("NEWS_API_KEY", "no api key found")
@@ -76,11 +74,7 @@ def main():
                     data.reset_index(inplace=True)
 
                     # Filter selected column or display all columns for the last 100 rows
-                    
                     data = data.tail(100)
-                    # st.write(f"Displaying data for {ticker} with interval {interval}")
-                    # st.write(data)
-                    
 
                     # Fetch API key for the LLM
                     groq_api_key = st.secrets.get("API_KEYS", {}).get("GROQ_API_KEY", "no api key found")
@@ -103,20 +97,24 @@ def main():
                     # Define a prompt for stock analysis
                     stock_analysis_prompt = f"""
                     You are a friendly stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume),
-                    perform technical analysis and trends. Incorporate the news: "{latest_article['description']}".
+                    perform technical analysis and trends. Incorporate the news: "{latest_article['description']}". 
                     Provide insights and predictions based on the data in a structured format.
                     """
 
-                    try:
-                        # Generate response using the pandas_df_agent
-                        response = pandas_df_agent.run(stock_analysis_prompt)
+                    # Add progress bar during processing
+                    with st.spinner("Generating stock analysis..."):
+                        progress_bar = st.progress(0)
+                        try:
+                            # Simulate a progress update
+                            response = pandas_df_agent.run(stock_analysis_prompt)
+                            for i in range(100):
+                                progress_bar.progress(i + 1)
+                            # Display assistant response
+                            st.markdown("## Stock Analysis Insights")
+                            st.write(response)
 
-                        # Display assistant response
-                        st.markdown("## Stock Analysis Insights")
-                        st.write(response)
-
-                    except Exception as e:
-                        st.error(f"Error generating response: {str(e)}")
+                        except Exception as e:
+                            st.error(f"Error generating response: {str(e)}")
                 else:
                     st.warning("No articles found for the specified company.")
             else:
