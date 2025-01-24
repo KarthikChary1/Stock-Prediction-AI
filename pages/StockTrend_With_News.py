@@ -13,8 +13,8 @@ def main():
     st.sidebar.header("Configuration")
 
     # Input for company name and stock ticker
-    company_name = st.sidebar.text_input("Enter the company name:", "")
-    ticker = st.sidebar.text_input("Enter Stock Ticker", value="^NSEI")
+    company_name = st.sidebar.text_input("Enter the company name:", value="Tata Consultancy Services")
+    ticker = st.sidebar.text_input("Enter Stock Ticker", value="TCS.NS")
 
     # Stock data interval
     interval = "1d"
@@ -87,27 +87,31 @@ def main():
                     data = data.tail(100)
 
                     # Fetch API key for the LLM
-                    groq_api_key = st.secrets.get("API_KEYS", {}).get("GROQ_API_KEY", "no api key found")
+                    groq_api_key = st.secrets.get("API_KEYS1", {}).get("GROQ_API_KEY1", "no api key found")
                     if groq_api_key == "no api key found":
                         st.error("GROQ API key not found. Please set it in your secrets.")
                         return
 
                     # Initialize ChatGroq LLM
-                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama3-8b-8192")
+                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama3-70b-8192")
 
                     # Create a pandas dataframe agent
                     pandas_df_agent = create_pandas_dataframe_agent(
                         llm,
                         data,
                         verbose=True,
-                        handle_parsing_errors=True,
-                        allow_dangerous_code=True,
+                        handle_parsing_errors="Check your output and make sure it conforms!",
+                        allow_dangerous_code=True,  agent_executor_kwargs={"handle_parsing_errors": True}
                     )
 
                     # Refined prompt to guide the analysis
                     stock_analysis_prompt = f"""
                     You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
-                    Analyze the trends, predict future movements, and incorporate insights using from this news: {latest_article['description']} and provide the insights.
+                    Analyze the trends, predict future movements, and incorporate insights from this news: {latest_article['description']}. 
+                    Provide a structured response in the following format:
+                    1. **Trend Analysis**: Describe the overall trend (e.g., upward, downward, sideways).
+                    
+                    2. **Impact of News**: Summarize how the latest news may affect the stock.
                     
                     """
 

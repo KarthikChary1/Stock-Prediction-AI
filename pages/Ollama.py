@@ -19,19 +19,19 @@ def ollama():
     )
     columns = ["Low", "Open", "High", "All", "Close", "Adj Close", "Volume"]
     selected_column = st.sidebar.selectbox("Select Column to Forecast", options=columns, index=3,)  # Default: "Close"
-
+    period = st.sidebar.slider("Select Number of Days", min_value=1, max_value=300, value=7)
     # Download stock data
     data = yf.download(ticker, interval=interval)
     if data.empty:
         st.error("No data found. Please check the ticker or interval.")
         return
     data.reset_index(inplace=True)
-
+    data.rename(columns={"Date": "Datetime"}, inplace=True)
     # Filter selected column or display all columns for the last 30 days
     if selected_column == "All":
-        data = data.tail(100)
+        data = data.tail(period)
     else:
-        data = data[["Datetime", selected_column]].tail(100)
+        data = data[["Datetime", selected_column]].tail(period)
 
     # Fetch API key for the LLM
     groq_api_key = st.secrets.get("API_KEYS", {}).get("GROQ_API_KEY", "no api key found")
@@ -47,8 +47,8 @@ def ollama():
         llm,
         data,
         verbose=True,
-        handle_parsing_errors=True,
-        allow_dangerous_code=True,
+        handle_parsing_errors="Check your output and make sure it conforms!",
+                        allow_dangerous_code=True,  agent_executor_kwargs={"handle_parsing_errors": True}
     )
 
     # Define a simpler prompt to instruct the LLM as a stock analyst
