@@ -111,6 +111,7 @@ def main():
                     Provide a structured response in the following format:
                     1. **Trend Analysis**: Describe the overall trend (e.g., upward, downward, sideways)
                     2. **Impact of News**: Summarize how the latest news may affect the stock.
+                    3.**your opinion**.
                     """
 
                     # Add progress bar during processing
