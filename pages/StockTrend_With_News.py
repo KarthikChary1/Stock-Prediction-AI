@@ -108,7 +108,11 @@ def main():
                     stock_analysis_prompt = f"""
                     You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
                     Analyze the trends, predict future movements, and incorporate insights using pandas-ta using from this news: {latest_article['description']}.
-                    
+                    Provide a structured response in the following format:
+                    1. **Trend Analysis**: Describe the overall trend (e.g., upward, downward, sideways).
+                    2. **Technical Indicators**: Highlight breakout signals, oversold/overbought conditions, or unusual volumes.
+                    3. **Predictions**: Offer short-term predictions with a confidence level (low, medium, high).
+                    4. **Impact of News**: Summarize how the latest news may affect the stock.
                     """
 
                     # Add progress bar during processing
