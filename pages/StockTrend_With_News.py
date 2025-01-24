@@ -107,7 +107,7 @@ def main():
                     # Refined prompt to guide the analysis
                     stock_analysis_prompt = f"""
                     You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
-                    Analyze the trends, predict future movements, and incorporate insights using from this news: {latest_article['description']}.
+                    Analyze the trends, predict future movements, and incorporate insights using from this news: {latest_article['description']} and provide the insights.
                     
                     """
 
