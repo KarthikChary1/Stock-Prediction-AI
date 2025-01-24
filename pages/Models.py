@@ -6,7 +6,7 @@ from LSTM import LSTM_func
 st.sidebar.header("Configuration")
 
 ticker = st.sidebar.text_input("Enter Stock Ticker", value="^NSEI")
-interval = st.sidebar.selectbox("Select Interval", options=["1m", "5m", "30m", "60m", "1d", "5d", "1wk", "1mo", "3mo"], index=0)
+interval = st.sidebar.selectbox("Select Interval", options=["1m", "5m", "30m", "60m", "1d", "5d"], index=0)
 forecast_method = st.sidebar.selectbox("Select Forecast Method", ["Prophet", "LSTM"], index=0)
 periods = st.sidebar.number_input("Future Prediction Periods (Prophet)", min_value=1, max_value=365, value=10)
 
