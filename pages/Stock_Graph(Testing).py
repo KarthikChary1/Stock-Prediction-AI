@@ -7,16 +7,22 @@ import time
 
 # Load tickers and company names from CSV
 def load_tickers_from_csv(file_path):
-    df = pd.read_csv(file_path, encoding='utf-8')
-    df['Ticker'] = df['Ticker'].str.strip()
-    df['Company'] = df['Company'].str.strip()
-    return df
+    try:
+        df = pd.read_csv(file_path, encoding='utf-8')
+        df['Ticker'] = df['Ticker'].str.strip()
+        df['Company'] = df['Company'].str.strip()
+        return df
+    except Exception as e:
+        st.error(f"Error loading tickers: {e}")
+        return pd.DataFrame()
 
 
 # Function to fetch stock data
 def fetch_stock_data(ticker, interval):
     try:
-        data = yf.download(ticker, period="1d", interval=interval)
+        data = yf.download(ticker, period="5d", interval=interval)
+        if data.empty:
+            st.warning(f"No data found for {ticker} with interval {interval}.")
         return data
     except Exception as e:
         st.error(f"Error fetching stock data: {e}")
@@ -25,26 +31,34 @@ def fetch_stock_data(ticker, interval):
 
 # Function to calculate RSI
 def calculate_rsi(data, window=14):
-    delta = data['Close'].diff()
-    gain = delta.where(delta > 0, 0)
-    loss = -delta.where(delta < 0, 0)
-    avg_gain = gain.rolling(window=window, min_periods=1).mean()
-    avg_loss = loss.rolling(window=window, min_periods=1).mean()
-    rs = avg_gain / avg_loss
-    rsi = 100 - (100 / (1 + rs))
-    return rsi
+    try:
+        delta = data['Close'].diff()
+        gain = delta.where(delta > 0, 0)
+        loss = -delta.where(delta < 0, 0)
+        avg_gain = gain.rolling(window=window, min_periods=1).mean()
+        avg_loss = loss.rolling(window=window, min_periods=1).mean()
+        rs = avg_gain / avg_loss
+        rsi = 100 - (100 / (1 + rs))
+        return rsi
+    except Exception as e:
+        st.error(f"Error calculating RSI: {e}")
+        return pd.Series()
 
 
 # Function to calculate MACD
 def calculate_macd(data):
-    short_window = 12
-    long_window = 26
-    signal_window = 9
-    short_ema = data['Close'].ewm(span=short_window, adjust=False).mean()
-    long_ema = data['Close'].ewm(span=long_window, adjust=False).mean()
-    macd = short_ema - long_ema
-    signal = macd.ewm(span=signal_window, adjust=False).mean()
-    return macd, signal
+    try:
+        short_window = 12
+        long_window = 26
+        signal_window = 9
+        short_ema = data['Close'].ewm(span=short_window, adjust=False).mean()
+        long_ema = data['Close'].ewm(span=long_window, adjust=False).mean()
+        macd = short_ema - long_ema
+        signal = macd.ewm(span=signal_window, adjust=False).mean()
+        return macd, signal
+    except Exception as e:
+        st.error(f"Error calculating MACD: {e}")
+        return pd.Series(), pd.Series()
 
 
 # Plot stock data with indicators
@@ -63,8 +77,9 @@ def plot_stock_data(data, indicator=None):
         )
     elif indicator == 'MACD':
         macd, signal = calculate_macd(data)
-        fig.add_trace(go.Scatter(x=data.index, y=macd, mode='lines', name='MACD'))
-        fig.add_trace(go.Scatter(x=data.index, y=signal, mode='lines', name='Signal Line'))
+        if not macd.empty and not signal.empty:
+            fig.add_trace(go.Scatter(x=data.index, y=macd, mode='lines', name='MACD'))
+            fig.add_trace(go.Scatter(x=data.index, y=signal, mode='lines', name='Signal Line'))
         fig.update_layout(title='Stock Price with MACD', xaxis_title='Time', yaxis_title='Price (USD)')
 
     return fig
@@ -74,7 +89,6 @@ def plot_stock_data(data, indicator=None):
 def real_time_stock_graph(tickers_df):
     st.title("Real-Time Stock Price Chart")
 
-    # Sidebar selections
     ticker_input = st.sidebar.text_input("Enter Stock Ticker or Company Name", value="AAPL")
     query = ticker_input.lower()
     filtered_tickers = tickers_df[tickers_df['Ticker'].str.lower().str.contains(query) |
@@ -89,11 +103,9 @@ def real_time_stock_graph(tickers_df):
     interval = st.sidebar.selectbox("Select Interval", ["1m", "5m", "30m", "60m", "1d", "5d", "1wk", "1mo"], index=0)
     indicator = st.sidebar.selectbox("Select Indicator", ["None", "RSI", "MACD"], index=0)
 
-    # Button for real-time chart
     start_chart = st.sidebar.button("Start Real-Time Chart")
     stop_chart = st.sidebar.button("Stop Real-Time Chart")
 
-    # Manage chart state with session state
     if "running" not in st.session_state:
         st.session_state.running = False
 
@@ -114,12 +126,15 @@ def real_time_stock_graph(tickers_df):
         fig = plot_stock_data(data, indicator if indicator != 'None' else None)
         chart_placeholder.plotly_chart(fig, use_container_width=True)
 
-        time.sleep(60)
+        time.sleep(60)  # Update every minute
 
 
 # App entry point
 def app():
     tickers_df = load_tickers_from_csv('tickers.csv')  # Replace with your file path
+    if tickers_df.empty:
+        st.error("Tickers data could not be loaded. Please check the CSV file.")
+        return
     real_time_stock_graph(tickers_df)
 
 
