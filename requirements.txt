@@ -12,5 +12,5 @@ langchain-experimental
 tabulate
 plotly
 requests 
-ta-lib
+TA-Lib
 pandas-ta 
