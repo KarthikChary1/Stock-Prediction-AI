@@ -40,7 +40,7 @@ def ollama():
         return
 
     # Initialize ChatGroq LLM
-    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama-3.2-90b-vision-preview")
+    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama3-70b-8192")
 
     # Create a pandas dataframe agent
     pandas_df_agent = create_pandas_dataframe_agent(
