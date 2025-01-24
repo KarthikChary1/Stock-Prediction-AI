@@ -52,14 +52,15 @@ with col1:
 with col2:
     if st.button("Chat with AI (LLM Insights)"):
         st.page_link(page="pages/Ollama.py",label="Click Here to Start")
+   
 
 with col3:
-    if st.button("Realtime Stock Graph"):
-        st.page_link(page="pages/Stock_Graph.py",label="Click Here to Start")   
+    if st.button("Stock Trend With News"):
+        st.page_link(page="pages/StockTrendWithNews.py",label="Stock Trend With News")     
 
 with col4:
-    if st.button("Realtime Stock Graph"):
-        st.page_link(page="pages/News.py",label="Stock News")               
+    if st.button("Stock News"):
+        st.page_link(page="pages/News.py",label="Latest News")   
 
 # Footer
 st.markdown(
