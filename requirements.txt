@@ -13,3 +13,4 @@ tabulate
 plotly
 requests 
 ta-lib
+pandas-ta 
