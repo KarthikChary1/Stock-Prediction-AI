@@ -95,7 +95,7 @@ def main():
                         return
 
                     # Initialize ChatGroq LLM
-                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama-3.2-90b-vision-preview")
+                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama-3.1-8b-instant")
 
                     # Create a pandas dataframe agent
                     pandas_df_agent = create_pandas_dataframe_agent(
