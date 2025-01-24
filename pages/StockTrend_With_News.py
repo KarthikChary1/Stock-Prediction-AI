@@ -4,7 +4,6 @@ import datetime
 import yfinance as yf
 from langchain_groq import ChatGroq
 from langchain_experimental.agents import create_pandas_dataframe_agent
-from langchain_core.messages import HumanMessage, AIMessage
 
 # Streamlit app
 def main():
@@ -52,11 +51,10 @@ def main():
     # Function to handle LLM response gracefully
     def handle_llm_response(response):
         try:
-            # Check if the response contains technical details or structured information
-            if "analysis" in response.lower() or "predictions" in response.lower():
+            # Return the structured response or fallback message
+            if "analysis" in response.lower():
                 return response
             else:
-                # If it's a generic response, provide a more helpful fallback
                 return "The response does not seem structured enough. Please try again with a more detailed analysis."
         except Exception as e:
             return f"An error occurred while processing the response: {str(e)}"
@@ -110,23 +108,29 @@ def main():
                     stock_analysis_prompt = f"""
                     You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
                     Analyze the trends, predict future movements, and incorporate insights from this news: {latest_article['description']}. 
-                    Provide a structured response with specific analysis on potential trends, including whether the stock is oversold or overbought, any breakout signals, 
-                    and predictions based on the data you have and don't use talib.
+                    Provide a structured response in the following format:
+                    1. **Trend Analysis**: Describe the overall trend (e.g., upward, downward, sideways).
+                    2. **Technical Indicators**: Highlight breakout signals, oversold/overbought conditions, or unusual volumes.
+                    3. **Predictions**: Offer short-term predictions with a confidence level (low, medium, high).
+                    4. **Impact of News**: Summarize how the latest news may affect the stock.
                     """
 
                     # Add progress bar during processing
                     with st.spinner("Generating stock analysis..."):
                         progress_bar = st.progress(0)
                         try:
-                            # Simulate a progress update
                             response = pandas_df_agent.run(stock_analysis_prompt)
                             for i in range(100):
                                 progress_bar.progress(i + 1)
 
-                            # Handle and validate the response
-                            parsed_response = handle_llm_response(response)
+                            # Validate and display the response
+                            if response and isinstance(response, str) and len(response) > 10:
+                                parsed_response = handle_llm_response(response)
+                            else:
+                                parsed_response = (
+                                    "The analysis could not be completed. Please refine the data or try again."
+                                )
 
-                            # Display assistant response
                             st.markdown("## Stock Analysis Insights")
                             st.write(parsed_response)
 
