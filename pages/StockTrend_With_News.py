@@ -93,7 +93,7 @@ def main():
                         return
 
                     # Initialize ChatGroq LLM
-                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="gemma2-9b-it")
+                    llm = ChatGroq(groq_api_key=groq_api_key, model_name="llama3-70b-8192")
 
                     # Create a pandas dataframe agent
                     pandas_df_agent = create_pandas_dataframe_agent(
@@ -107,7 +107,7 @@ def main():
                     # Refined prompt to guide the analysis
                     stock_analysis_prompt = f"""
                     You are a stock analysis expert. Given the stock data (such as Open, High, Low, Close, Volume), perform a detailed technical analysis. 
-                    Analyze the trends, predict future movements, and incorporate insights from this news: {latest_article['description']}.
+                    Analyze the trends, predict future movements, and incorporate insights using pandas-ta using from this news: {latest_article['description']}.
                     
                     """
 
